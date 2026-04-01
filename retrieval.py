@@ -14,13 +14,19 @@ class ChromaDenseRetriever:
         self.collection = self.client.get_or_create_collection("rag")
 
         if self.collection.count() == 0:
+            BATCH_SIZE = 1000 # Safe batch size for encoding
+
             embeddings = self.model.encode(texts).tolist()
 
-            self.collection.add(
-                documents=texts,
-                embeddings=embeddings,
-                ids=[str(i) for i in range(len(texts))]
-            )
+            for i in range(0, len(texts), BATCH_SIZE):
+                batch_docs = texts[i:i + BATCH_SIZE]
+                batch_embs = self.model.encode(batch_docs).tolist()
+
+                self.collection.add(
+                    documents=batch_docs,
+                    embeddings=batch_embs,
+                    ids=[str(j) for j in range(i, i + len(batch_docs))]
+                )
 
     def search(self, query, k=5):
         q_emb = self.model.encode([query]).tolist()
@@ -30,7 +36,17 @@ class ChromaDenseRetriever:
             n_results=k
         )
 
-        return results["documents"][0], results["distances"][0]
+        docs = results["documents"][0]
+
+        # Flatten if nested
+        flattened = []
+        for d in docs:
+            if isinstance(d, list):
+                flattened.extend(d)
+            else:
+                flattened.append(d)
+
+        return flattened, results["distances"][0]
 
 
 class HybridRetriever:
@@ -45,6 +61,8 @@ class HybridRetriever:
 
     def search(self, query, k=5):
         dense_docs, dense_scores = self.dense.search(query, k=20)
+
+        dense_docs = [d for d in dense_docs if isinstance(d, str)]
 
         bm25_scores = self.bm25.get_scores(query.split())
 

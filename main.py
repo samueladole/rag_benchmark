@@ -39,7 +39,7 @@ def run():
             for query, truth in tqdm(data):
 
                 docs = retriever.search(query, TOP_K)
-                context = "\n".join(docs)
+                context = "\n".join(docs) if isinstance(docs, list) else docs
 
                 pred, latency, cost = generate_answer(query, context, llm["name"])
 
@@ -51,6 +51,8 @@ def run():
                 )
                 metrics["latency"].append(latency)
                 metrics["cost"].append(cost)
+
+                print(type(docs), docs[:2])
 
             summary = {k: compute_stats(v) for k, v in metrics.items()}
 
