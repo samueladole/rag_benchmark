@@ -206,7 +206,7 @@ python main.py
 
 ---
 
-## 💼 Resume Impact
+## 💼 Impact
 
 This project demonstrates:
 
