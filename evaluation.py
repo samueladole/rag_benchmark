@@ -15,5 +15,8 @@ def f1_score(pred, truth):
     recall = len(common)/len(t)
     return 2 * precision * recall / (precision + recall)
 
-def recall_at_k(docs, truth):
-    return any(truth.lower() in d.lower() for d in docs)
+def recall_at_k(retrieved_docs, ground_truth):
+    for doc in retrieved_docs:
+        if ground_truth.lower() in doc.lower():
+            return 1
+    return 0
