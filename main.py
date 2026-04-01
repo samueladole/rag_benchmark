@@ -4,14 +4,14 @@ from llm import generate_answer
 from evaluation import exact_match, f1_score, recall_at_k
 from faithfulness import judge_faithfulness
 from stats import compute_stats
-from tracker import init, log
+# from tracker import init, log
 from config import *
 
 from tqdm import tqdm
 
 
 def run():
-    init()
+    # init()
 
     data1, corpus1 = load_msmarco()
     data2, corpus2 = load_hotpotqa()
@@ -54,11 +54,11 @@ def run():
 
             summary = {k: compute_stats(v) for k, v in metrics.items()}
 
-            log({
-                "retriever": r_name,
-                "llm": llm["name"],
-                **{f"{k}_mean": v["mean"] for k, v in summary.items()}
-            })
+            # log({
+            #     "retriever": r_name,
+            #     "llm": llm["name"],
+            #     **{f"{k}_mean": v["mean"] for k, v in summary.items()}
+            # })
 
             print(r_name, llm["name"], summary)
 
