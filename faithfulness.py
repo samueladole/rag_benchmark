@@ -21,6 +21,8 @@ Respond with only YES or NO.
         json={"model": "mistral", "prompt": prompt, "stream": False}
     )
 
-    output = res.json()["response"].strip().lower()
+    resp = res.json()
+
+    output = resp["response"].strip().lower() if "response" in resp else ""
 
     return 1 if "yes" in output else 0

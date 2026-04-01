@@ -17,6 +17,6 @@ def f1_score(pred, truth):
 
 def recall_at_k(retrieved_docs, ground_truth):
     for doc in retrieved_docs:
-        if ground_truth.lower() in doc.lower():
+        if isinstance(ground_truth, str) and isinstance(doc, str) and ground_truth.lower() in doc.lower():
             return 1
     return 0
