@@ -1,0 +1,10 @@
+
+chromadb
+sentence-transformers
+rank_bm25
+datasets
+numpy
+pandas
+tqdm
+requests
+wandb
